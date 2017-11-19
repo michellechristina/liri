@@ -144,7 +144,6 @@ function getSong(value) {
             console.log("Preview: " + songDetails.preview_url);
             console.log("--------------------------------------");
 
-            //   console.log(response);
         })
         .catch(function (err) {
             console.log(err);
