@@ -12,7 +12,7 @@ var twitterInfo = require("./keys.js");
 var twitter = new twitterPackage(twitterInfo);
 
 var action = process.argv[2];
-// var value = process.argv[3];
+var value = process.argv[3];
 
 
 // The switch-case statement directs which function gets run.
@@ -35,10 +35,39 @@ switch (action) {
 }
 
 function movie() {
+
+    // Then run a request to the OMDB API with the movie specified
+request("http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=40e9cece", function(error, response, body) {
+    
+      // If the request is successful (i.e. if the response status code is 200)
+      if (!error && response.statusCode === 200) {
+    
+        // console.log(body);
+        console.log(JSON.parse(body, null, '  '));
+        console.log("--------------------------------------");
+        console.log("Movie: " + JSON.parse(body).Title);
+        console.log("Release Year: " + JSON.parse(body).Year);
+        console.log("Rating: " + JSON.parse(body).imdbRating);
+        // console.log("Tomato Rating: " + JSON.parse(body).tomatoMeter);
+        console.log("Country: " + JSON.parse(body).Country);
+        console.log("Language: " + JSON.parse(body).Language);
+        console.log("Actors: " + JSON.parse(body).Actors);
+        console.log("Plot: " + JSON.parse(body).Plot);
+        console.log("--------------------------------------");
+      }
+
+      else {
+
+          var value = "Mr Nobody"
+          movie();
+        //   console.log("things happen");
+
+      }
+    });
     }
 
 
-/// https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline.html
+
 
 function tweet() {
     twitter.get('statuses/user_timeline', "MichelleCB111", function(error, tweets, response) {
@@ -54,6 +83,8 @@ function tweet() {
 
     });
 }
+
+
 
 function command() {
     
