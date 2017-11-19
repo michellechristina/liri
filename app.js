@@ -1,18 +1,25 @@
 // Include the request npm package (Don't forget to run "npm install request" in this folder first!)
 var request = require("request");
 var twitterPackage = require('twitter');
-var spotify = require('node-spotify-api');
-var twitterInfo = require("./keys.js");
+var spotifyPackage = require('node-spotify-api');
+var key = require("./keys.js");
 
 //console.log("keys " +twitterInfo.consumer_key);
 // console.log("twitter key ");
 // console.log(JSON.stringify(twitterKey));
 
 // make a new twitter object with our keys
-var twitter = new twitterPackage(twitterInfo);
+var twitter = new twitterPackage(key.twitterKeys);
+
+// make a new spotify object with our keys
+var spotify = new spotifyPackage(key.spotKey);
 
 var action = process.argv[2];
-var value = process.argv[3];
+// var value = process.argv[3];
+var value = process.argv.slice(3).join(" ");
+console.log("value: " +value);
+
+// .join("+")
 
 
 // The switch-case statement directs which function gets run.
@@ -30,7 +37,7 @@ switch (action) {
     break;
 
   case "spotify-this-song":
-    spotify();
+    song();
     break;
 }
 
@@ -43,7 +50,7 @@ request("http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=40e9cece",
       if (!error && response.statusCode === 200) {
     
         // console.log(body);
-        console.log(JSON.parse(body, null, '  '));
+        // console.log(JSON.parse(body, null, '  '));
         console.log("--------------------------------------");
         console.log("Movie: " + JSON.parse(body).Title);
         console.log("Release Year: " + JSON.parse(body).Year);
@@ -58,10 +65,11 @@ request("http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=40e9cece",
 
       else {
 
-          var value = "Mr Nobody"
-          movie();
-        //   console.log("things happen");
+        //   var value = "Mr Nobody"
+        //   movie();
+        // //   console.log("things happen");
 
+        
       }
     });
     }
@@ -90,24 +98,28 @@ function command() {
     
 }
 
-function spotify() {
+function song() {
+    // console.log("inside spotify function");
+    spotify
+    .search({ type: 'track', query: value, limit: 1 })
+    .then(function(response) {
+        // console.log(JSON.stringify(response, null, '  '));
+        // console.log(JSON.stringify(response.tracks[].artists[].items[].name));
+        // console.log(JSON.stringify(response.models.tracks[].artists.items.name));
+      
+        var songDetails = response.tracks.items[0];
+        // console.log(songInfo);
+        console.log("--------------------------------------");
+        console.log("Song Name: " +songDetails.name);
+        console.log("Artist: " +songDetails.artists[0].name);
+        console.log("Album: " +songDetails.album.name);
+        console.log("Preview: " +songDetails.preview_url);
+        console.log("--------------------------------------");
+
+    //   console.log(response);
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
     
 }
-
-
-
-
-
-// // Then run a request to the OMDB API with the movie specified
-// request("http://www.omdbapi.com/?t=remember+the+titans&y=&plot=short&apikey=40e9cece", function(error, response, body) {
-
-//   // If the request is successful (i.e. if the response status code is 200)
-//   if (!error && response.statusCode === 200) {
-
-//     // Parse the body of the site and recover just the imdbRating
-//     // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
-//     console.log("The movie's rating is: " + JSON.parse(body).imdbRating);
-//   }
-// });
-
-
