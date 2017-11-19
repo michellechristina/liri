@@ -42,6 +42,40 @@ switch (action) {
         break;
 }
 
+//////////////////////////////
+
+function command() {
+    fs.readFile("random.txt", "utf8", function (error, data) {
+
+        // If the code experiences any errors it will log the error to the console.
+        if (error) {
+            return console.log(error);
+        }
+
+
+        var dataArr = data.split(",");
+
+        var action = dataArr[0];
+        var value = dataArr[1];
+
+        // console.log("action " + dataArr[0]);
+        // console.log("value " + dataArr[1]);
+
+        if (action === "spotify-this-song") {
+            getSong(value);
+            console.log("loading song...")
+        } else if (action === "movie-this") {
+            movie(value);
+        } else if (action === "my-tweets") {
+            tweet()
+        }
+
+    });
+
+}
+
+//////////////////////////////
+
 function movie(value) {
     if (!value) {
         value = 'Mr Nobody';
@@ -69,16 +103,16 @@ function movie(value) {
     });
 }
 
-
-
+//////////////////////////////
 
 function tweet() {
     twitter.get('statuses/user_timeline', "MichelleCB111", function (error, tweets, response) {
+        console.log("--------------------------------------");
         if (!error) {
             tweets.forEach(element => {
                 console.log("Tweet: " + element.text + " | Created on: " + element.created_at);
             });
-
+            console.log("--------------------------------------");
         } else {
             console.log("oops, not working");
         }
@@ -86,47 +120,7 @@ function tweet() {
     });
 }
 
-
-
-function command() {
-    fs.readFile("random.txt", "utf8", function (error, data) {
-
-        // If the code experiences any errors it will log the error to the console.
-        if (error) {
-            return console.log(error);
-        }
-
-        // We will then print the contents of data
-        console.log("the command " + data);
-        var dataArr = data.split(",");
-        console.log("the data array " + dataArr);
-        var action = dataArr[0];
-        var value = dataArr[1];
-
-        console.log("action " + dataArr[0]);
-        console.log("value " + dataArr[1]);
-
-        if (action === "spotify-this-song") {
-            getSong(value)
-        } else if (action === "movie-this") {
-            movie(value);
-        } else if (action === "my-tweets") {
-            tweet()
-        }
-
-        //   return ("node app.js " +data)
-        //   getSong(data)
-        // Then split it by commas (to make it more readable)
-        //   var dataArr = data.split(",");
-
-        // We will then re-display the content as an array for later use.
-        //   console.log(dataArr);
-
-    });
-
-
-
-}
+//////////////////////////////
 
 function getSong(value) {
     if (!value) {
@@ -155,5 +149,4 @@ function getSong(value) {
         .catch(function (err) {
             console.log(err);
         });
-
 }
